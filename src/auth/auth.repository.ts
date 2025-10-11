@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Collection } from 'mongodb';
 import { DbService } from 'src/db/db.service';
@@ -13,18 +13,19 @@ export class AuthRepository {
     return this.dbService.getDb(dbName).collection('users');
   }
 
-  async createUser(username: string, password: string) {
-    const user = await this.usersCollection.findOne({
-      username
-    });
-    if (user) throw new HttpException('Пользователь уже существует', HttpStatus.BAD_REQUEST);
+  async findByUsername(username: string) {
+    return this.usersCollection.findOne({ username });
+  }
 
-    await this.usersCollection.insertOne({
+  async createUser(user: any) {
+    return this.usersCollection.insertOne(user);
+  }
+
+  async loginUser(username: string, password: string) {
+    return this.usersCollection.findOne({
       username,
-      password,
-      createdAt: new Date(),
-    });
-    return { message: 'Пользователь успешно создан', statusCode: HttpStatus.CREATED };
+      password
+    })
   }
 
   async getAllUsers() {
