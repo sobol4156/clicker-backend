@@ -5,12 +5,13 @@ import { AuthModule } from './auth/auth.module';
 import { DbModule } from './db/db.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserStatisticsModule } from './user-statistics/user-statistics.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [DbModule, AuthModule, UserStatisticsModule, ConfigModule.forRoot({
     isGlobal: true,
     envFilePath: '.env',
-  })],
+  }), ProfileModule],
   controllers: [AppController],
   providers: [AppService],
 })

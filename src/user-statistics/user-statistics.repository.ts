@@ -13,10 +13,6 @@ export class UserStatisticsRepository {
     return this.dbService.getDb(dbName).collection('user_statistics');
   }
 
-  findByUserId(userId: string) {
-    return this.usersStatisticsCollection.findOne({ userId });
-  }
-
   async upsertScoreByUserId(userId: string, username: string, score: number) {
     const now = new Date();
     await this.usersStatisticsCollection.updateOne(

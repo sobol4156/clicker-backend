@@ -12,12 +12,6 @@ export class UserStatisticsController {
     const count = Number(limit) || 10
     return this.userStatisticsService.getTopUsers(count);
   }
-  
-  @UseGuards(AuthGuard('jwt'))
-  @Get('me')
-  getMyScore(@CurrentUser() user: { userId: string; username: string }) {
-    return this.userStatisticsService.getMyScore(user.userId);
-  }
 
   @UseGuards(AuthGuard('jwt'))
   @Post('update')

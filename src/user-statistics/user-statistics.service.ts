@@ -4,11 +4,6 @@ import { UserStatisticsRepository } from './user-statistics.repository';
 @Injectable()
 export class UserStatisticsService {
   constructor(private userStatisticsRepo: UserStatisticsRepository) { }
-  
-  async getMyScore(userId: string) {
-    const doc = await this.userStatisticsRepo.findByUserId(userId);
-    return { score: doc?.score ?? 0 };
-  }
 
   async syncUserScore(userId: string, username: string, score: number) {
     const safeScore = Number.isFinite(score) && score >= 0 ? Math.floor(score) : 0;
