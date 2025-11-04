@@ -15,9 +15,45 @@ export class ProfileRepository {
 
   async findUser(userId: string) {
     try {
-      return this.usersCollection.findOne({ _id: new ObjectId(userId) }, {projection: {_id: 0}});
+      return this.usersCollection.findOne({ _id: new ObjectId(userId) }, { projection: { _id: 0 } });
     } catch (error) {
       return null;
+    }
+  }
+
+  async updateUser(userId: string, filePath: string) {
+    try {
+      const result = await this.usersCollection.updateOne(
+        { _id: new ObjectId(userId) },
+        { $set: { avatarUrl: filePath } }
+      );
+
+      // Проверяем, найден ли пользователь
+      if (result.matchedCount === 0) {
+        return {
+          success: false,
+          message: 'User not found',
+        };
+      }
+
+      // Проверяем, было ли изменение
+      if (result.modifiedCount === 0) {
+        return {
+          success: true,
+          message: 'Avatar was already set to this value',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'User avatar updated successfully',
+      };
+    } catch (error) {
+      console.error('Error updating user avatar:', error);
+      return {
+        success: false,
+        message: 'Failed to update user avatar',
+      };
     }
   }
 }
