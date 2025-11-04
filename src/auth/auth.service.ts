@@ -7,6 +7,17 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthService {
   constructor(private readonly authRepository: AuthRepository, private jwtService: JwtService) { }
 
+  async validateUser(username: string, password: string): Promise<any> {
+    const user = await this.authRepository.findByUsername(username);
+    if (!user) return null;
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return null;
+
+    const { password: _, ...safeUser } = user;
+    return safeUser;
+  }
+
   async register(username: string, password: string) {
     const existing = await this.authRepository.findByUsername(username);
     if (existing) {
@@ -38,7 +49,7 @@ export class AuthService {
     if (!isValid) {
       throw new HttpException('Неверный логин или пароль', HttpStatus.UNAUTHORIZED);
     }
-    const payload = { sub: user.userId, username: user.username };
+    const payload = { sub: user._id.toString(), username: user.username };
 
     const access_token = this.jwtService.sign(payload);
 
